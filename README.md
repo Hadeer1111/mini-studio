@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mini Studio
 
-## Getting Started
+A Next.js app that turns a text prompt into a short video.
 
-First, run the development server:
+1. Describe a scene in plain text
+2. An image is generated from your prompt (OpenAI gpt-image-1)
+3. Review the image — regenerate or accept
+4. The accepted image is turned into a 10-second 1080p video with audio (Seedance via BytePlus ModelArk)
+5. Download the finished video
+
+## Setup
 
 ```bash
+npm install
+cp .env.local.example .env.local
+# Fill in the values in .env.local (see below)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Required environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Source |
+|----------|--------|
+| `GATE_PASSWORD` | Shared password for the login gate |
+| `COOKIE_SECRET` | `openssl rand -hex 32` |
+| `OPENAI_API_KEY` | [platform.openai.com](https://platform.openai.com/api-keys) |
+| `ARK_API_KEY` | [BytePlus ModelArk console](https://console.byteplus.com/ark/region:ark+ap-southeast-1/apiKey) |
+| `KV_REST_API_URL` | Vercel KV / Upstash integration |
+| `KV_REST_API_TOKEN` | Vercel KV / Upstash integration |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob integration |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Deploy to Vercel
 
-## Learn More
+1. Push this repo to GitHub
+2. Import into Vercel
+3. Link a KV store and Blob store in the Vercel dashboard
+4. Add the remaining env vars (GATE_PASSWORD, COOKIE_SECRET, OPENAI_API_KEY, ARK_API_KEY)
+5. Deploy
 
-To learn more about Next.js, take a look at the following resources:
+## Tech stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router, TypeScript)
+- Tailwind CSS 4
+- Upstash Redis (via Vercel KV integration) for job state
+- Vercel Blob for image persistence
+- OpenAI gpt-image-1 for image generation
+- BytePlus ModelArk / Seedance 1.5 Pro for video generation
