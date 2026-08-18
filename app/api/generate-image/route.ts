@@ -64,9 +64,10 @@ export async function POST(request: NextRequest) {
     };
     await createJob(job).catch(() => {});
 
+    const rawDetail = err instanceof Error ? err.message : String(err);
     const status = category === "content_moderation" ? 422 : 502;
     return NextResponse.json(
-      { error: message, errorCategory: category, jobId },
+      { error: message, errorCategory: category, jobId, detail: rawDetail },
       { status }
     );
   }
